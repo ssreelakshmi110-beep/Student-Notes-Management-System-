@@ -1,0 +1,8 @@
+# Keep API keys private
+server/.env
+
+# Dependencies
+server/node_modules/
+
+# Other environment files
+.env

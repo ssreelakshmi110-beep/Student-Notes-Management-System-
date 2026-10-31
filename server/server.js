@@ -1,0 +1,20 @@
+import express from "express";
+import OpenAI from "openai";
+import dotenv from "dotenv";
+import path from "path";
+import {fileURLToPath} from "url";
+const __dirname=path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({path:path.join(__dirname,".env")});
+const app=express(),PORT=process.env.PORT||3000;
+app.use(express.json({limit:"20kb"}));
+app.use(express.static(path.resolve(__dirname,"..")));
+const openai=process.env.OPENAI_API_KEY?new OpenAI({apiKey:process.env.OPENAI_API_KEY}):null;
+app.post("/api/ask",async(req,res)=>{try{
+const question=req.body?.question;
+if(typeof question!=="string"||!question.trim())return res.status(400).json({error:"Please enter a question."});
+if(question.length>5000)return res.status(400).json({error:"Question is too long. Please shorten it."});
+if(!openai)return res.status(503).json({error:"API key missing. Add OPENAI_API_KEY to server/.env and restart."});
+const result=await openai.responses.create({model:process.env.OPENAI_MODEL||"gpt-5.5",instructions:"You are StudyMate AI, a friendly study assistant. Explain academic topics in simple English. Use clear headings, bullet points and step-by-step explanations. Create short notes and quizzes when requested.",input:question});
+res.json({answer:result.output_text});
+}catch(error){console.error(error.message);res.status(500).json({error:"AI service unavailable. Check your API setup and try again."})}});
+app.listen(PORT,()=>console.log(`StudyMate AI running at http://localhost:${PORT}`));

@@ -28,13 +28,17 @@ footer{font-size:10px;color:#96a2b2;text-align:center;padding:28px 0 0}
     <button data-view="Digital Electronics"><span class="ico">⌁</span> Digital Electronics</button>
     <button data-view="Assignments"><span class="ico">✓</span> Assignments</button>
   </nav></div>
-  <div><div class="nav-label">YOUR SPACE</div><nav class="nav">
+  <div><div class="nav-label">YOUR SPACE</div><nav class="nav"><button type="button"
+        data-view="study-ai"
+        onclick="setView('study-ai', 'StudyMate AI')">
+    🧠 StudyMate AI
+</button>
     <button id="sharedNav"><span class="ico">♧</span> Shared resources</button>
     <button id="savedNav"><span class="ico">♡</span> Saved notes</button>
   </nav></div>
   <div class="side-bottom"><div class="spark">✦</div><strong>Little by little,</strong><br><strong>you learn a lot.</strong><p>Keep your study materials tidy and make every study session count.</p><button id="sideAdd">＋ Add a new note</button></div>
 </aside>
-<main>
+<main><div id="dashboard-view">
   <header class="topbar"><div><div class="crumb">Workspace / <span id="crumbName">Overview</span></div><h2 id="pageTitle">Your learning space</h2></div><div class="top-actions"><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search your notes..." aria-label="Search notes"></label><button class="primary" id="addBtn">＋ Add note</button><div class="avatar" title="Student profile">ST</div></div></header>
   <section class="hero"><div class="hero-content"><div class="eyebrow">A calmer way to study</div><h3>Everything you learn,<br>all in one place.</h3><p>Collect your class notes, organize them by subject, and find the right material when you need it. Your next study session starts here.</p><button class="primary" id="heroAdd">＋ Organize your notes</button></div><div class="hero-art"><div class="book"><b>✎</b><span>MY NOTES</span></div><div class="float one">✦ Stay curious</div><div class="float two">✓ Stay organized</div></div></section>
   <section class="stats">
@@ -56,8 +60,40 @@ footer{font-size:10px;color:#96a2b2;text-align:center;padding:28px 0 0}
       <div class="quick"><div class="quick-icon">⇩</div><div><strong>Export your notes list</strong><small>Keep an offline record</small></div><button class="dots arrow" id="exportBtn">↗</button></div>
     </div></div>
   </section>
-  <footer>NoteNest · Made for curious minds · Keep learning, one page at a time.</footer>
-</main>
+  <footer>NoteNest · Made for curious minds · Keep learning, one page at a time.</footer></div>
+<section id="study-ai-view" style="display:none;">
+    <div class="study-ai-header">
+        <h2>🧠 StudyMate AI</h2>
+        <p>Your personal learning assistant</p>
+    </div>
+
+    <div id="welcome">
+        <h3>What do you want to learn today?</h3>
+        <p>Ask questions and prepare for exams.</p>
+
+        <button onclick="quickAsk('Explain data structures in simple words')">
+            Explain a topic
+        </button>
+
+        <button onclick="quickAsk('Create short notes about operating systems')">
+            Create short notes
+        </button>
+
+        <button onclick="quickAsk('Generate 5 quiz questions about Python with answers')">
+            Generate a quiz
+        </button>
+    </div>
+
+    <div id="chatBox" aria-live="polite"></div>
+
+    <div>
+        <textarea id="userInput" placeholder="Ask anything about your studies..."></textarea>
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="clearChat()">New Chat</button>
+    </div>
+
+    <p>AI can make mistakes. Verify important study information.</p>
+</section></main>
 </div>
 <div class="modal-backdrop" id="modalBackdrop"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><h3 id="modalTitle">Add a new note</h3><button class="close" id="closeModal" aria-label="Close">×</button></div><form id="noteForm">
   <div class="field"><label for="noteTitle">Note title *</label><input id="noteTitle" required maxlength="90" placeholder="e.g. Introduction to Data Structures"></div>
@@ -93,7 +129,49 @@ $("subjectList").innerHTML=subjects.map((s,i)=>`<div class="subject"><div class=
 function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$("toast").classList.remove("show"),2500)}
 function openModal(){ $("modalBackdrop").classList.add("open");setTimeout(()=>$("noteTitle").focus(),50)}
 function closeModal(){$("modalBackdrop").classList.remove("open");$("noteForm").reset()}
-function setView(view,label){activeView=view;activeFilter="All";savedOnly=false;sharedOnly=false;document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===view&&b.textContent.trim().includes(label)||label==="Overview"&&b.textContent.includes("Overview")));$("crumbName").textContent=label;$("pageTitle").textContent=label==="Overview"?"Your learning space":label;$("notesHeading").textContent=label==="Overview"||label==="All notes"?"Recently added notes":label;$("filters").querySelectorAll("button").forEach(b=>b.classList.toggle("active",b.dataset.filter==="All"));render()}
+function setView(view, label) {
+    activeView = view;
+    activeFilter = "All";
+    savedOnly = false;
+    sharedOnly = false;
+
+    document.querySelectorAll(".nav button").forEach(b =>
+        b.classList.toggle(
+            "active",
+            b.dataset.view === view &&
+            (b.textContent.trim().includes(label) ||
+             (label === "Overview" && b.textContent.includes("Overview")))
+        )
+    );
+
+    const studyAI = document.getElementById("study-ai-view");
+    const dashboard = document.getElementById("dashboard-view");
+
+    if (studyAI) {
+        studyAI.style.display = view === "study-ai" ? "block" : "none";
+    }
+
+    if (dashboard) {
+        dashboard.style.display = view === "study-ai" ? "none" : "block";
+    }
+
+    $("crumbName").textContent = label;
+    $("pageTitle").textContent =
+        label === "Overview" ? "Your learning space" : label;
+
+    $("notesHeading").textContent =
+        label === "Overview" || label === "All notes"
+            ? "Recently added notes"
+            : label;
+
+    $("filters").querySelectorAll("button").forEach(b =>
+        b.classList.toggle("active", b.dataset.filter === "All")
+    );
+
+    if (view === "study-ai") return;
+
+    render();
+}
 $("addBtn").onclick=openModal;$("heroAdd").onclick=openModal;$("sideAdd").onclick=openModal;$("quickAdd").onclick=openModal;$("closeModal").onclick=closeModal;$("cancelModal").onclick=closeModal;$("modalBackdrop").addEventListener("click",e=>{if(e.target===$("modalBackdrop"))closeModal()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
 $("noteForm").addEventListener("submit",e=>{e.preventDefault();const file=$("noteFile").files[0];const n={id:Date.now(),title:$("noteTitle").value.trim(),subject:$("noteSubject").value,desc:$("noteDesc").value.trim(),fileType:file?(file.name.split(".").pop()||"FILE").toUpperCase():"NOTE",fileName:file?file.name:"",date:"Just now",saved:false,shared:$("noteShared").checked,icon:"",tone:subjectTone($("noteSubject").value)};if(file){n.fileData=null;const reader=new FileReader();reader.onload=()=>{n.fileData=reader.result;notes.unshift(n);persist();activeView="all";activeFilter="All";$("searchInput").value="";closeModal();render();toast("Note and attachment saved on this device.")};reader.onerror=()=>{notes.unshift(n);persist();closeModal();render();toast("Note saved, but the file could not be attached.")};reader.readAsDataURL(file)}else{notes.unshift(n);persist();activeView="all";activeFilter="All";$("searchInput").value="";closeModal();render();toast("Your new note has been added.")}});
 $("filters").addEventListener("click",e=>{const b=e.target.closest("[data-filter]");if(!b)return;activeFilter=b.dataset.filter;activeView="all";savedOnly=false;sharedOnly=false;$("filters").querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));$("notesHeading").textContent=activeFilter==="All"?"Recently added notes":activeFilter;render()});
@@ -106,5 +184,6 @@ $("viewAll").onclick=()=>setView("all","All notes");$("quickSearch").onclick=()=
 $("exportBtn").onclick=()=>{const csv=[["Title","Subject","Description","File","Saved","Shared"],...notes.map(n=>[n.title,n.subject,n.desc,n.fileName||n.fileType,n.saved?"Yes":"No",n.shared?"Yes":"No"])].map(row=>row.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="notenest-notes.csv";a.click();URL.revokeObjectURL(url);toast("Notes list exported as CSV.")};
 render();
 </script>
+<script src="script.js"></script>
 </body>
 </html>
