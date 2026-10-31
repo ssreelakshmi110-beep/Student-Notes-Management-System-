@@ -1,0 +1,61 @@
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}body{background:#f4f5fb;color:#25243a}.app{display:flex;min-height:100vh}.sidebar{width:260px;flex-shrink:0;background:#25243a;color:white;padding:28px 20px;display:flex;flex-direction:column}.sidebar h2{margin-bottom:10px}.sidebar>p{color:#c6c5d8;font-size:13px;margin-bottom:35px}.new-chat{width:100%;padding:13px;border:1px solid #77758d;background:transparent;color:white;border-radius:9px;cursor:pointer}.new-chat:hover{background:#383750}.side-info{margin-top:45px}.side-info h3{margin-bottom:20px}.side-info p{color:#d4d3e1;margin:18px 0;font-size:14px}.foot{margin-top:auto;padding-top:30px;color:#aaa8c0;font-size:11px}.main{flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column;padding:25px 5%}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e1e1eb;padding-bottom:20px}.sub{color:#858397;font-size:13px;margin-top:5px}.status{color:#159b65;font-size:13px}.welcome{text-align:center;margin:auto;padding:35px 10px}.brain{font-size:55px;margin-bottom:20px}.welcome h1{font-size:27px;margin-bottom:12px}.welcome>p{color:#777;margin-bottom:25px}.suggestions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}.suggestions button{background:white;border:1px solid #ddd;border-radius:12px;padding:13px;cursor:pointer;color:#49466e}.suggestions button:hover{background:#ecebff}.chat-box{flex:1;width:100%;max-width:850px;margin:20px auto;overflow-y:auto}.message{padding:15px 18px;margin:15px 0;border-radius:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}.user{background:#e5e3ff;margin-left:15%}.bot{background:white;border:1px solid #e5e5ed;margin-right:10%}.input-area{display:flex;gap:12px;max-width:850px;width:100%;margin:0 auto;padding:12px;background:white;border:1px solid #ddd;border-radius:15px}textarea{flex:1;min-width:0;border:0;outline:0;resize:vertical;font-size:15px;padding:10px;background:transparent}#sendBtn{background:#6258d9;color:white;border:0;border-radius:10px;padding:0 20px;cursor:pointer;font-size:20px}#sendBtn:disabled{opacity:.5;cursor:wait}.disclaimer{text-align:center;font-size:11px;color:#999;margin-top:12px}@media(max-width:700px){.sidebar{display:none}.main{padding:18px 14px}.welcome h1{font-size:22px}.user{margin-left:5%}.bot{margin-right:3%}}
+/* StudyMate AI */
+#study-ai-view {
+    padding: 25px;
+    background: #f5f3ff;
+    border-radius: 15px;
+    min-height: 450px;
+}
+
+#study-ai-view .study-ai-header {
+    margin-bottom: 25px;
+}
+
+#study-ai-view h2 {
+    color: #6045a5;
+}
+
+#study-ai-view #welcome {
+    text-align: center;
+    padding: 35px 10px;
+}
+
+#study-ai-view button {
+    background: #7054b8;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    margin: 6px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+#study-ai-view button:hover {
+    background: #50358f;
+}
+
+#study-ai-view #chatBox {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#study-ai-view .message {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+
+#study-ai-view .user {
+    background: #e4dcff;
+}
+
+#study-ai-view .bot {
+    background: white;
+}
+
+#study-ai-view textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
